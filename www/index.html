@@ -1,0 +1,364 @@
+
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <title>City Health</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta charset="utf-8">
+
+    <script type="text/javascript" src="js/jquery-1.9.1.js"></script>
+    <script type="text/javascript" src="js/jquery-ui-1.10.3.custom.js"></script>
+
+
+    <link rel="stylesheet" type="text/css" href="css/jquery-ui-1.10.3.custom.css">
+    <link rel="stylesheet" href="css/bootstrapSimplex.css" media="screen">
+    <link rel="stylesheet" href="css/bootswatch.min.css">
+
+    <link rel="stylesheet" type="text/css" href="css/style.css">
+
+
+    <script type="text/javascript" src="js/bootstrap.file-input.js"></script>
+    <script src="http://174.129.225.176/socket.io/socket.io.js"></script>
+    <script type="text/javascript" src="js/logic.js"></script>
+
+    <script src="js/jquery.timeago.js" type="text/javascript"></script>
+
+    <style type="text/css">
+      /*select option { color: black; }
+      select option:first-child { color: grey; }
+      select.empty { color: grey; } */
+    </style>
+    <link href="src/nv.d3.css" rel="stylesheet" type="text/css">
+
+
+
+    <!-- HTML5 shim and Respond.js IE8 support of HTML5 elements and media queries -->
+    <!--[if lt IE 9]>
+      <script src="../bower_components/bootstrap/assets/js/html5shiv.js"></script>
+      <script src="../bower_components/bootstrap/assets/js/respond.min.js"></script>
+    <![endif]-->
+    <script src="lib/d3.v3.js"></script>
+    <script src="nv.d3.js"></script>
+    <script src="src/utils.js"></script>
+    <script src="src/models/pie.js"></script>
+    <script src="src/models/pieChart.js"></script>
+
+    
+
+
+    <script type="text/javascript">
+    </script>
+
+    <!--script type="text/javascript">
+
+     var _gaq = _gaq || [];
+      _gaq.push(['_setAccount', 'UA-23019901-1']);
+      _gaq.push(['_setDomainName', "bootswatch.com"]);
+        _gaq.push(['_setAllowLinker', true]);
+      _gaq.push(['_trackPageview']);
+
+     (function() {
+       var ga = document.createElement('script'); ga.type = 'text/javascript'; ga.async = true;
+       ga.src = ('https:' == document.location.protocol ? 'https://ssl' : 'http://www') + '.google-analytics.com/ga.js';
+       var s = document.getElementsByTagName('script')[0]; s.parentNode.insertBefore(ga, s);
+     })();
+
+    </script-->
+  </head>
+  <body>
+    <script src="js/bsa.js"></script>
+
+    <div class="navbar navbar-default navbar-fixed-top">
+      <div class="container">
+        <div class="navbar-header">
+          <a href="#" class="navbar-brand">Zona Vital</a>
+          <button class="navbar-toggle" type="button" data-toggle="collapse" data-target="#navbar-main">
+            <span class="icon-bar"></span>
+            <span class="icon-bar"></span>
+            <span class="icon-bar"></span>
+          </button>
+        </div>
+        <div class="navbar-collapse collapse" id="navbar-main">
+          <ul class="nav navbar-nav">
+            <li>
+              <a href="#">SIVIGILA</a><!-- DATOS SIVIGILA POR DEPARTAMENTO Y MUNICIPIO DE PROCEDENCIA -->
+            </li>
+            <li>
+              <a href="#">SIVICAP</a><!-- Sistema de Vigilancia de la Calidad del Agua Potable para consumo humano -->
+            </li>
+          </ul>
+
+          <ul class="nav navbar-nav navbar-right">
+            <!--li><a href="http://builtwithbootstrap.com/" target="_blank">Built With Bootstrap</a></li-->
+            <li><a href="https://wrapbootstrap.com/?ref=bsw" target="_blank">WrapBootstrap</a></li>
+          </ul>
+
+        </div>
+      </div>
+    </div>
+
+
+
+
+    <div class="jumbotron" style="padding:0px !important;padding-right:0px !important;padding-left:0px !important;">
+      <img src="images/ZonaVital.png" style="width:100%">
+      
+      <!--div class="container" style="background-image:url('images/ZonaVital.png');"-->
+        
+        <!--h1>Hello, world!</h1-->
+        <!--p>This is a template for a simple marketing or informational website. It includes a large callout called a jumbotron ... </p-->
+        <!--p><a class="btn btn-primary btn-lg" role="button">Learn more »</a></p-->
+      </div>
+    </div>
+
+
+
+
+
+    <!--div><iframe width="940" height="600" frameborder="0" scrolling="no" marginheight="0" marginwidth="0" src="http://prosis.maps.arcgis.com/home/webmap/templates/OnePane/basicviewer/embed.html?webmap=d1ee4b6cda384681872f8afa068fe900&amp;gcsextent=-84.4409,-1.3915,-62.9077,11.7526&amp;displayslider=true&amp;displayscalebar=true&amp;displaylegend=true&amp;displaybasemaps=true"></iframe><br /><small><a href="http://prosis.maps.arcgis.com/home/webmap/viewer.html?webmap=d1ee4b6cda384681872f8afa068fe900&amp;extent=-84.4409,-1.3915,-62.9077,11.7526" style="color:#0000FF;text-align:left" target="_blank">Ver mapa más grande</a></small></div-->
+
+
+    <div class="row" style="width:98%;margin:auto;">
+
+      <div class="col-lg-6">
+        <div class="panel-group" id="accordion" style="margin:0px 10px 20px 10px;">
+          <div class="panel panel-default">
+            <div class="panel-heading">
+              <h4 class="panel-title">
+                <a data-toggle="collapse" data-parent="#accordion" href="#collapseOne">
+                  Cambia tu Zona<span id="zona"></span>
+                </a>
+              </h4>
+            </div>
+            <div id="collapseOne" class="panel-collapse collapse">
+              <div class="panel-body">
+
+
+                <form class="form-inline" role="form">
+                  <div class="form-group" style="width:100%;">
+                    <label class="sr-only" for="listDepartments">Departamento</label>
+                    <select class="form-control" id="listDepartments">
+                      <!--option value="" disabled selected>ssasasa</option-->
+                    </select>
+                  </div>
+                  <div class="form-group" style="width:100%;">
+                    <label class="sr-only" for="listMunicipalities">Municipio</label>
+                    <select class="form-control" id="listMunicipalities">
+                      <!--option value="" disabled selected>dddd</option-->
+                    </select>
+                  </div>
+                  <!--button type="submit" class="btn btn-default">Sign in</button-->
+                </form>
+
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      
+      <div class="col-lg-6">
+        <div class="panel-group" id="accordion" style="margin:0px 10px 20px 10px;">
+          <div class="panel panel-default">
+            <div class="panel-heading">
+              <h4 class="panel-title">
+                <a data-toggle="collapse" data-parent="#accordion" href="#collapseSecond">
+                  Reporta un Caso
+                </a>
+              </h4>
+            </div>
+            <div id="collapseSecond" class="panel-collapse collapse">
+              <div class="panel-body">
+
+                <div class="bs-example">
+                  <ul class="nav nav-tabs" style="margin-bottom: 15px;">
+                    <li class="active"><a href="#foto" data-toggle="tab">Foto</a></li>
+                    <li><a href="#mensaje" data-toggle="tab">Mensaje</a></li>
+                  </ul>
+                  <div id="myTabContent" class="tab-content">
+                    <div class="tab-pane fade active in" id="foto">
+
+                      <form method="POST" role="form" id="formFoto" name="formFoto">
+                        <div class="form-group">
+                          <!--label for="exampleInputEmail1">Titulo Imagen</label-->
+                          <input type="text" class="form-control" name="title" id="title" placeholder="Título">
+                        </div>
+                        <div class="form-group">
+                          <!--label for="exampleInputEmail1">Email</label-->
+                          <input type="email" class="form-control" name="email" id="email" placeholder="Correo Electrónico">
+                        </div>
+                        <div class="form-group">
+                          <input type="file" id="file" name="file" title="Selecciona un archivo">
+                        </div>
+                        <div class="form-group" style="text-align:right;">
+                          <input type="submit" class="btn btn-info" style="padding-top:10px;" id="sendFormFoto" value="Enviar" />
+                        </div>
+                      </form>
+
+                      
+                    </div>
+                    <div class="tab-pane fade" id="mensaje" style="text-align:right;">
+                      <form method="POST" role="form" id="formMensaje" name="formMensaje">
+                        <div class="form-group">
+                          <!--label for="exampleInputEmail1">Email</label-->
+                          <input type="email" class="form-control" id="correo" placeholder="Correo Electrónico">
+                        </div>
+                        <div class="form-group">
+                          <textarea class="form-control" rows="3" id="textMensaje" name="textMensaje" placeholder="Describe el caso"></textarea>
+                        </div>
+                        <!-- Provides extra visual weight and identifies the primary action in a set of buttons -->
+                        <br/>
+                        <input type="submit" id="sendFormMensaje" class="btn btn-info" style="padding-top:10px;" value="Enviar" />
+                      </form>
+                    </div>                        
+                  </div>
+                </div>
+                
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+
+    </div>
+
+
+
+
+    <div class="row" style="width:98%;margin:auto;">
+      <div class="col-lg-6">
+        <div class="panel panel-info" style="margin:0px 10px 20px 10px;">
+            <div class="panel-heading" style="color: #d9edf7;background-color: #3a87ad;">
+              <h3 class="panel-title" style="font-size: 20px;font-weight: bold;text-align: right;">TOP</h3>
+            </div>
+            <div class="panel-body">
+
+              <table style="width:100%;">
+                <tr>
+                  <td colspan="2" style="font-family:'Josefin Sans', 'Helvetica Neue', Helvetica, Arial, sans-serif;font-size: 18px;">
+                    <blockquote>
+                      <p>Aquí puedes encontrar el listado de las enfermedades que mas casos registran, en la zona seleccionada:</p>
+                      <small><cite title="Source Title">SIVIGILA</cite></small>
+                    </blockquote>
+                  </td>
+                </tr>
+                <tr>
+                  <td style="width:40%;"><img src="images/health.png" width="80%"></td>
+                  <td style="width:60%">
+                    <div id="noInfoIllnesses" class="text-warning" style="font-weight:bold;font-size:30px;text-align:center;font-family:'Josefin Sans', 'Helvetica Neue', Helvetica, Arial, sans-serif;">
+                      
+                    </div>
+                    <div class="bs-example" id="topIllnesses" style="margin-left: 7%;">
+                      <ul class="list-group">
+                        <!--li class="list-group-item">
+                          <span class="badge">10</span>
+                          BASEEEEEE
+                        </li-->
+                      </ul>
+                    </div>
+                  </td>
+                </tr>
+              </table>
+
+            </div>
+          </div>
+      </div>
+      <div class="col-lg-6">
+          <div class="panel panel-info" style="margin:0px 10px 20px 10px;">
+            <div class="panel-heading" style="color: #d9edf7;background-color: #3a87ad;">
+              <h3 class="panel-title" style="font-size: 20px;font-weight: bold;text-align: right;">AGUA</h3>
+            </div>
+            <div class="panel-body">
+            
+              <!--div class="progress progress-striped" style="margin-bottom: 9px;">
+                <div class="progress-bar progress-bar-info" style="width: 20%"></div>
+              </div-->
+            
+              
+              <table style="width:100%">
+                <tr>
+                  <td colspan="2" style="font-family:'Josefin Sans', 'Helvetica Neue', Helvetica, Arial, sans-serif;font-size: 18px;">
+                    <blockquote class="pull-right">
+                      <p>Aquí puedes conocer el nivel de contaminación del agua de la zona seleccionada:</p>
+                      <small><cite title="Source Title">SIVICAP</cite></small>
+                    </blockquote>
+                  </td>
+                </tr>
+                <tr>
+                  <td id="ircaContainer" style="width:50%;">
+                    <svg id="irca_svg"></svg>    
+                  </td>
+                  <td style="width:50%;" rowspan="2" style="text-align:right;">
+                    <img src="images/water.png" width="75%">
+                  </td>
+                </tr>
+                <tr>
+                  <td style="text-align:center;">
+                    <span id="detailWater" style="font-weight: bold;font-size: 30px;color:#3a87ad;font-family:'Josefin Sans', 'Helvetica Neue', Helvetica, Arial, sans-serif;"></span>
+                    <span id="noInfoWater" class="text-warning" style="font-weight:bold;font-size:30px;text-align:center;font-family:'Josefin Sans', 'Helvetica Neue', Helvetica, Arial, sans-serif;"></span>
+                  </td>
+                </tr>
+              </table>
+              
+            </div>
+          </div>
+      </div>
+    </div>
+    
+
+
+
+
+
+    <div class="row" style="width:98%;margin:auto;">
+    <div class="col-lg-12" >
+        <div  class="panel panel-success" style="margin:0px 10px 20px 10px;">
+              <div class="panel-heading">
+                <h3 class="panel-title">Últimas denuncias</h3>
+              </div>
+              <div id="messages" class="panel-body">
+
+                <div class="bs-example">
+                  <div class="list-group">
+
+ 
+                    <!--a href="#" class="list-group-item">
+                      <h4 class="list-group-item-heading">
+                        OTRA NOTICIA 
+                        <span style="text-align:right;position: absolute;right: 10px;">[12/Noviembre/2013]</span>
+                      </h4>
+                      <div class="columnsText" style="text-align: justify;text-align: justify;">
+                        <img src="images/casos/perro.jpg" style="float:left;margin-right:20px;width:50%;">
+                        
+                        <p>No me gusta rellenar los textos con lorem ipsum porque me parece impersonal. No me gusta rellenar los textos con lorem ipsum porque me parece impersonal. No me gusta rellenar los textos con lorem ipsum porque me parece impersonal.</p>
+                        <p>No me gusta rellenar los textos con lorem ipsum porque me parece impersonal. No me gusta rellenar los textos con lorem ipsum porque me parece impersonal. No me gusta rellenar los textos con lorem ipsum porque me parece impersonal.</p>
+                        <p>No me gusta rellenar los textos con lorem ipsum porque me parece impersonal. No me gusta rellenar los textos con lorem ipsum porque me parece impersonal. No me gusta rellenar los textos con lorem ipsum porque me parece impersonal.</p> 
+                      </div>
+                       
+                    </a-->                  
+
+                  </div>
+                </div>
+
+              </div>
+        </div>
+    </div>
+        
+
+    </div>
+
+
+    
+
+
+
+
+
+
+    <script src="https://code.jquery.com/jquery.js"></script>
+    <script src="js/bootstrap.min.js"></script>
+    <script src="js/bootswatch.js"></script>
+  </body>
+</html>
+
